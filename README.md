@@ -1,5 +1,5 @@
-QGIS Realtime Orchestration
-=============================
+QGIS Mapserver Demo Orchestration
+=================================
 
 Orchestration scripts for running QGIS demo server.
 
@@ -16,12 +16,12 @@ There are three main scripts here:
   ``./build.sh [github organisation or user name]``
   
   During the build process, these docker images will be built:
-  * **AIFDR/docker-realtime-btsync**: This runs a btsync server that will
+  * **kartoza/docker-qgis-btsync**: This runs a btsync server that will
     contain the analysis datasets used during shakemap generation. The btsync 
     peer hosted here is read only. To push data to the server, you need to 
     have the write token (ask Tim or Akbar for it if needed). The 
     container run from this image will be a long running daemon. 
-  * **AIFDR/docker-qgis-server**: This runs a QGIS mapserver container 
+  * **kartoza/docker-qgis-server**: This runs a QGIS mapserver container 
     which has apache, mod_fcgi and QGIS Mapserver installed in it.
   
 * **deploy.sh**: This script will launch containers for all the long running

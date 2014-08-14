@@ -8,7 +8,7 @@ echo "images as a series of docker containers"
 echo "----------------------------------------"
 echo ""
 
-run_qgis_server_container
 run_btsync_container
-
+run_postgis_container
+run_qgis_server_container
 

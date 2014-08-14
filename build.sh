@@ -27,7 +27,7 @@ else
   export ORG=$1
 fi
 
-build_qgis_server_image
 build_btsync_image
-
+build_postgis_image
+build_qgis_server_image
 
