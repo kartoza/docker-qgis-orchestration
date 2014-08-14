@@ -31,8 +31,6 @@ function kill_container {
 
 }
 
-
-
 function build_btsync_image {
 
     echo ""
