@@ -16,13 +16,17 @@ There are three main scripts here:
   ``./build.sh [github organisation or user name]``
   
   During the build process, these docker images will be built:
-  * **kartoza/docker-qgis-btsync**: This runs a btsync server that will
+  * **kartoza/qgis-btsync**: This runs a btsync server that will
     contain the analysis datasets used during shakemap generation. The btsync 
     peer hosted here is read only. To push data to the server, you need to 
     have the write token (ask Tim or Akbar for it if needed). The 
     container run from this image will be a long running daemon. 
-  * **kartoza/docker-qgis-server**: This runs a QGIS mapserver container 
+  * **kartoza/qgis-server**: This runs a QGIS mapserver container 
     which has apache, mod_fcgi and QGIS Mapserver installed in it.
+  * **kartoza/qgis-postgis**: This runs a postgis instance in it.
+  * **kartoza/qgis-desktop**: This runs a dockerised version of QGIS desktop 
+    and can be used for testing and loading postgis data in a local development 
+    environment.
   
 * **deploy.sh**: This script will launch containers for all the long running
   daemons mentioned in the list above. Each container will be named with
