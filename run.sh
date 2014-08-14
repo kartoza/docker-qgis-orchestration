@@ -7,3 +7,5 @@ source ${DIR}/functions.sh
 
 # Any short lived container jobs go here
 
+# Run the QGIS desktop client
+run_qgis_desktop_container 

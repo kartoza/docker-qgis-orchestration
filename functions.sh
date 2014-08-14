@@ -3,9 +3,21 @@
 BASE_DIR=/var/www/
 WEB_DIR=${BASE_DIR}/web
 
-BTSYNC_IMAGE=docker-qgis-btsync
-POSTGIS_IMAGE=docker-postgis
-QGIS_SERVER_IMAGE=docker-qgis-server
+BTSYNC_GIT_REPO=docker-qgis-btsync
+BTSYNC_IMAGE=qgis-btsync
+BTSYNC_CONTAINER=qgis-btsync
+
+POSTGIS_GIT_REPO=docker-postgis
+POSTGIS_IMAGE=postgis
+POSTGIS_CONTAINER=qgis-postgis
+
+QGIS_SERVER_GIT_REPO=qgis-server
+QGIS_SERVER_IMAGE=qgis-server
+QGIS_SERVER_CONTAINER=qgis-server
+
+QGIS_DESKTOP_GIT_REPO=docker-qgis-desktop
+QGIS_DESKTOP_IMAGE=qgis-desktop
+QGIS_DESKTOP_CONTAINER=qgis-desktop
 
 function make_directories {
 
@@ -37,7 +49,7 @@ function build_btsync_image {
     echo "Building btsync image"
     echo "====================================="
 
-    docker build -t kartoza/${BTSYNC_IMAGE} git://github.com/${ORG}/${BTSYNC_IMAGE}.git
+    docker build -t kartoza/${BTSYNC_IMAGE} git://github.com/${ORG}/${BTSYNC_GIT_REPO}.git
 
 }
 
@@ -49,9 +61,9 @@ function run_btsync_container {
 
     make_directories
 
-    kill_container ${BTSYNC_IMAGE}
+    kill_container ${BTSYNC_CONTAINER}
 
-    docker run --name="${BTSYNC_IMAGE}" \
+    docker run --name="${BTSYNC_CONTAINER}" \
         -v ${WEB_DIR}:/web \
         -p 8888:8888 \
         -p 55555:55555 \
@@ -65,7 +77,7 @@ function build_postgis_image {
     echo "Building postgis image"
     echo "====================================="
 
-    docker build -t kartoza/${POSTGIS_IMAGE} git://github.com/${ORG}/${POSTGIS_IMAGE}.git
+    docker build -t kartoza/${POSTGIS_IMAGE} git://github.com/${ORG}/${POSTGIS_GIT_REPO}.git
 
 }
 
@@ -77,9 +89,9 @@ function run_postgis_container {
 
     make_directories
 
-    kill_container ${POSTGIS_IMAGE}
+    kill_container ${POSTGIS_CONTAINER}
 
-    docker run --name="${POSTGIS_IMAGE}" \
+    docker run --name="${POSTGIS_CONTAINER}" \
         -d -t kartoza/${POSTGIS_IMAGE}
 
 }
@@ -90,7 +102,7 @@ function build_qgis_server_image {
     echo "Building QGIS Server Image"
     echo "====================================="
 
-    docker build -t kartoza/${QGIS_SERVER_IMAGE} git://github.com/${ORG}/${QGIS_SERVER_IMAGE}.git
+    docker build -t kartoza/${QGIS_SERVER_IMAGE} git://github.com/${ORG}/${QGIS_SERVER_GIT_REPO}.git
 
 }
 
@@ -100,19 +112,64 @@ function run_qgis_server_container {
     echo "Running QGIS Server container"
     echo "====================================="
 
-    kill_container ${QGIS_SERVER_IMAGE}
+    kill_container ${QGIS_SERVER_CONTAINER}
 
     make_directories
 
-    cp web/index.html ${WEB_DIR}/
-    cp -r web/resource ${WEB_DIR}/
-
-    docker run --name="${QGIS_SERVER_IMAGE}" \
-        -v ${WEB_DIR}:/web \
-        -l ${POSTGIS_IMAGE}:${POSTGIS_IMAGE}
-        -l ${BTSYNC_IMAGE}:${BTSYNC_IMAGE}
+    # We mount BTSYNC volumes which provides
+    # /web into this container
+    # and we link POSTGIS and BTSYNC
+    # to establish a dependency on them
+    # when bringing this container up
+    # The posgis link wil add a useful
+    # entry to /etc/hosts that should be used
+    # referencing postgis layers
+    set -x
+    docker run --name="${QGIS_SERVER_CONTAINER}" \
+        --volumes-from ${BTSYNC_IMAGE} \
+        --link=${POSTGIS_CONTAINER}:${POSTGIS_CONTAINER} \
+	--link=${BTSYNC_CONTAINER}:${BTSYNC_CONTAINER} \
         -p 8198:80 \
         -d -t kartoza/${QGIS_SERVER_IMAGE}
+}
 
+function build_qgis_desktop_image {
 
+    echo ""
+    echo "Building QGIS Desktop Image"
+    echo "====================================="
+
+    docker build -t kartoza/${QGIS_DESKTOP_IMAGE} git://github.com/${ORG}/${QGIS_DESKTOP_GIT_REPO}.git
+
+}
+
+function run_qgis_desktop_container {
+
+    echo ""
+    echo "Running QGIS Desktop container"
+    echo "====================================="
+    xhost +
+    # Users home is mounted as home
+    # --rm will remove the container as soon as it ends
+
+    # We mount BTSYNC volumes which provides
+    # /web into this container
+    # and we link POSTGIS and BTSYNC
+    # to establish a dependency on them
+    # when bringing this container up
+    # The posgis link wil add a useful
+    # entry to/etc/hosts that should be used
+    # referencing postgis layers
+
+    set -x
+    docker run --rm --name="${QGIS_DESKTOP_CONTAINER}" \
+	-i -t \
+        --volumes-from ${BTSYNC_IMAGE} \
+	-v ${HOME}:/home/${USER} \
+        --link=${POSTGIS_CONTAINER}:${POSTGIS_CONTAINER} \
+	--link=${BTSYNC_CONTAINER}:${BTSYNC_CONTAINER} \
+	-v /tmp/.X11-unix:/tmp/.X11-unix \
+	-e DISPLAY=unix$DISPLAY \
+	kartoza/${QGIS_DESKTOP_IMAGE}:latest 
+    xhost -
 }

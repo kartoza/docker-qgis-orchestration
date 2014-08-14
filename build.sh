@@ -30,4 +30,4 @@ fi
 build_btsync_image
 build_postgis_image
 build_qgis_server_image
-
+build_qgis_desktop_image 
