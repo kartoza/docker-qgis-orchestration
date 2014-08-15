@@ -45,7 +45,7 @@ to use all you need to do is (on your host):
 
 
 ```
-git clone git://github.com/kartoza/docker-qgis-orchestration.git
+git clone https://github.com/kartoza/docker-qgis-orchestration.git
 cd docker-qgis-orchestration
 ./build.sh
 ./deploy.sh
