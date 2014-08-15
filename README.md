@@ -17,9 +17,9 @@ There are three main scripts here:
   
   During the build process, these docker images will be built:
   * **kartoza/qgis-btsync**: This runs a btsync server that will
-    contain the analysis datasets used during shakemap generation. The btsync 
+    contain the GIS. The btsync 
     peer hosted here is read only. To push data to the server, you need to 
-    have the write token (ask Tim or Akbar for it if needed). The 
+    have the write token (ask Tim or Richard for it if needed). The 
     container run from this image will be a long running daemon. 
   * **kartoza/qgis-server**: This runs a QGIS mapserver container 
     which has apache, mod_fcgi and QGIS Mapserver installed in it.
