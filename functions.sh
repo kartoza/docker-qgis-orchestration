@@ -11,7 +11,7 @@ POSTGIS_GIT_REPO=docker-postgis
 POSTGIS_IMAGE=postgis
 POSTGIS_CONTAINER=qgis-postgis
 
-QGIS_SERVER_GIT_REPO=qgis-server
+QGIS_SERVER_GIT_REPO=docker-qgis-server
 QGIS_SERVER_IMAGE=qgis-server
 QGIS_SERVER_CONTAINER=qgis-server
 
