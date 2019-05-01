@@ -7,7 +7,7 @@ To use you need to have docker and docker-compose installed on any supported hos
 
 # Get the code
 
-First check out the sourecs to your local machine:
+First check out the sources to your local machine:
 
 ```
 git clone https://github.com/qgis/docker-qgis-orchestration.git
@@ -45,7 +45,7 @@ c35949d6f660        kartoza/btsync            "/start.sh"              24 minute
 
 # Test the service
 
-You can test the service is running on OSX or windows by pointing to port 8198 of your docker machine:
+You can test the service is running on OSX or windows by pointing to port `8198` of your docker machine:
 
 ```
 docker-machine ls
@@ -60,7 +60,7 @@ On Linux simply test by pointing your browser at http:///localhost:8198
 # Reverse proxy for nginx
 
 Lastly you will probably want to set up a reverse proxy pointing to your QGIS
-Mapserver container (our orchestration scripts publish on 8198 by default).
+Mapserver container (our orchestration scripts publish on `8198` by default).
 If you are using nginx on the host, you can simply do:
 
 ```
